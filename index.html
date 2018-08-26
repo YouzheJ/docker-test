@@ -19,5 +19,82 @@
             <button id="login-btn">登陆</button>
         </div>
     </div>
+
+    <script>
+        // 通过id获取元素
+        function $ (id) {
+            return document.getElementById(id);
+        }
+
+        function showMsg (msg) {
+            alert(msg);
+        }
+
+        function ajax (opt) {
+            var xhr = new XMLHttpRequest();
+            var option = opt || {};
+            var url = option.url;
+            var method = (option.method || 'get').toLocaleLowerCase();
+            var data = option.data || {};
+            var successCB = option.success;
+            var errorCB = option.error;
+            
+
+            if (!url) return;
+            if (method === 'get') {
+                var param = '';
+                for (var key in data) {
+                    param += '&' + key + '=' + data[key];
+                }
+                if (param.length) {
+                    url += url.indexOf('?') !== -1 ? param : ('?' + param.slice(1));
+                }
+                data = null;
+            }
+
+            xhr.open(method, url, true);
+            method === 'post' && (xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8'));
+            xhr.send(data);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.status === 200 && xhr.readyState === 4) {
+                    successCB && successCB(xhr.responseText);
+                } else {
+                    errorCB && errorCB(xhr.responseText);
+                }
+            }
+
+            xhr.onerror = function (err) {
+                errorCB && errorCB(err);
+            }
+        }
+
+        var usernameInput = $('username') || {};
+        var passwordInput = $('password') || {};
+
+        $('login-btn').onclick = function () {
+            var username = usernameInput.value || '';
+            var password = passwordInput.value || '';
+
+            if (!username) return showMsg('用户名不能为空');
+            if (!password) return showMsg('密码不能为空');
+
+            ajax({
+                url: 'http://localhost:5000/api/login',
+                method: 'post',
+                data: {
+                    username: username,
+                    password: password
+                },
+                success: function (res) {
+                    console.log(res);
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+
+    </script>
 </body>
 </html>
