@@ -1,0 +1,12 @@
+body {
+	margin: 0;
+	padding: 0;
+	background: #f2f2f2;
+}
+p {
+	margin-top: 50px;
+	font-size: 26px;
+	color: #333;
+	text-align: center;
+}
+
