@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(session({
     store: new RedisStore({
-
+        host: 'redis'
     }),
     secret: 'docker-test',
     resave: false,

@@ -7,7 +7,7 @@
 const mongoose = require('mongoose');
 
 // mongoose 会缓存所有的命令，所以不需要关心命令是否连接成功后执行
-mongoose.connect('mongodb://localhost/docker-test');
+mongoose.connect('mongodb://mongodb/docker-test');
 
 const Schema = mongoose.Schema;
  

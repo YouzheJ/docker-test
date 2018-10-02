@@ -1,6 +1,7 @@
 <!DOCTYPE>
 <html>
 <head>
+    <meta charset="utf-8">
 	<title>docker test</title>
 	<link rel="stylesheet" href="./index.css" />
 </head>
@@ -80,12 +81,12 @@
             if (!password) return showMsg('密码不能为空');
 
             ajax({
-                url: 'http://localhost:5000/api/login',
+                url: '/api/login',
                 method: 'post',
-                data: {
-                    username: username,
+                data: JSON.stringify({
+                    name: username,
                     password: password
-                },
+                }),
                 success: function (res) {
                     console.log(res);
                 },
