@@ -56,7 +56,7 @@ app.get('/api/userinfo/get', function (req, res) {
                 res.send({msg: 'has not login', result: false});
                 return;
             }
-            res.send({msg: 'has login', result: true});
+            res.send({msg: 'has login', result: result.name});
         })
         .catch((error) => {
             console.log(error);

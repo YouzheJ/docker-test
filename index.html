@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
 	<title>docker test</title>
-	<link rel="stylesheet" href="./index.css" />
+	<link rel="stylesheet" href="./index.css?v=20181002" />
 </head>
 <body>
     <p id="title">hello world</p>
@@ -18,6 +18,11 @@
         </div>
         <div class="login-item">
             <button id="login-btn">登陆</button>
+        </div>
+    </div>
+    <div class="logout-content">
+        <div class="login-item">
+            <button id="logout-btn">退出登陆</button>
         </div>
     </div>
 
@@ -100,7 +105,11 @@
                             msg: '系统异常，请稍后重试',
                         }
                     }
-                    alert(data.result === true ? '登陆成功' : data.msg);
+                    if (data.result !== true) {
+                        alert(data.msg);
+                        return;
+                    }
+                    toggleContent(username);
                 },
                 error: function (err) {
                     console.log(err);
@@ -109,16 +118,66 @@
             });
         }
 
+        function logoutHandle () {
+            ajax({
+                url: '/api/logout',
+                success: function (res) {
+                    var data = {};
+                    try {
+                        data = JSON.parse(res);
+                    } catch (err) {
+                        data = {
+
+                        }
+                    }
+                    if (data.result) {
+                        toggleContent();
+                    }
+                },
+                error: function (err) {
+
+                }
+            })
+        }
+
         function enterHandle (e) {
             if (e.keyCode === 13) {
                 loginHandle(e);
             }
         }
 
+        function getUserName () {
+            ajax({
+                url: '/api/userinfo/get',
+                success: function (res) {
+                    try {
+                        var data = JSON.parse(res);
+                        if (!data.result) return;
+                        toggleContent(data.result);
+                    } catch (err) {
+
+                    }
+                }
+            });
+        }
+
+        function toggleContent (name) {
+            var show = !!name;
+            var titleText = 'hello world';
+            if (show) {
+                titleText = '欢迎，' + name;
+            }
+            
+            $('#title').innerText = titleText;
+            $('.login-content').style.display = !show ? 'block' : 'none';
+            $('.logout-content').style.display = show ? 'block' : 'none';
+        }
+
         $('#login-btn').onclick = loginHandle;
+        $('#logout-btn').onclick = logoutHandle;
         usernameInput.onkeydown = enterHandle;
         passwordInput.onkeydown = enterHandle;
-
+        getUserName();
     </script>
 </body>
 </html>
