@@ -23,8 +23,8 @@
 
     <script>
         // 通过id获取元素
-        function $ (id) {
-            return document.getElementById(id);
+        function $ (name) {
+            return document.querySelector(name);
         }
 
         function showMsg (msg) {
@@ -58,8 +58,11 @@
             xhr.send(data);
 
             xhr.onreadystatechange = function () {
-                if (xhr.status === 200 && xhr.readyState === 4) {
-                    successCB && successCB(xhr.responseText);
+                if (xhr.readyState !== 4) {
+                    return;
+                }
+                if (xhr.status === 200) {
+                        successCB && successCB(xhr.responseText);
                 } else {
                     errorCB && errorCB(xhr.responseText);
                 }
@@ -70,10 +73,10 @@
             }
         }
 
-        var usernameInput = $('username') || {};
-        var passwordInput = $('password') || {};
+        var usernameInput = $('#username') || {};
+        var passwordInput = $('#password') || {};
 
-        $('login-btn').onclick = function () {
+        function loginHandle () {
             var username = usernameInput.value || '';
             var password = passwordInput.value || '';
 
@@ -88,13 +91,33 @@
                     password: password
                 }),
                 success: function (res) {
-                    console.log(res);
+                    var data = {};
+                    try {
+                        data = JSON.parse(res);
+                    } catch (err) {
+                        data = {
+                            result: false,
+                            msg: '系统异常，请稍后重试',
+                        }
+                    }
+                    alert(data.result === true ? '登陆成功' : data.msg);
                 },
                 error: function (err) {
                     console.log(err);
+                    alert('登陆失败，请稍后重试');
                 }
             });
         }
+
+        function enterHandle (e) {
+            if (e.keyCode === 13) {
+                loginHandle(e);
+            }
+        }
+
+        $('#login-btn').onclick = loginHandle;
+        usernameInput.onkeydown = enterHandle;
+        passwordInput.onkeydown = enterHandle;
 
     </script>
 </body>
